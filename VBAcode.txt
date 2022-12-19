@@ -1,0 +1,196 @@
+CODE TABLE
+
+Option Explicit
+
+Sub Table()
+'
+
+'
+Dim i As Integer, j As Integer, nr As Integer, nc As Integer, c As Integer
+Dim arr() As Integer
+
+nr = Selection.Rows.Count
+nc = Selection.Columns.Count
+
+'n/a in empty cells
+For i = 1 To nr
+    For j = 1 To nc
+        If IsEmpty(Selection.Cells(i, j)) = True Then Selection.Cells(i, j) = "n/a"
+    Next j
+Next i
+
+'Find notes columns
+c = 0
+For i = 1 To nc
+    If (InStr(ActiveCell.Offset(0, i - 1).Value, "notes") > 0 Or InStr(ActiveCell.Offset(0, i - 1).Value, "Notes") > 0 Or InStr(ActiveCell.Offset(0, i - 1).Value, "NOTES") > 0) Then
+         c = c + 1
+    End If
+Next i
+
+'MsgBox "nc" & nc& " c" & c
+c = nc - c
+
+Dim k As Integer
+j = 1
+ReDim arr(c) As Integer
+'MsgBox c
+For i = 1 To nc
+    If (InStr(ActiveCell.Offset(0, i - 1).Value, "notes") = 0 And InStr(ActiveCell.Offset(0, i - 1).Value, "Notes") = 0 And InStr(ActiveCell.Offset(0, i - 1).Value, "NOTES") = 0) Then
+            arr(j) = i
+   '         MsgBox arr(j)
+            j = j + 1
+    End If
+Next
+
+
+'Edit all cells
+
+'Font size 11 then Calibri
+With Selection.Font
+    .Name = "Calibri"
+    .Size = 11
+    .Strikethrough = False
+    .Superscript = False
+    .Subscript = False
+    .OutlineFont = False
+    .Shadow = False
+    .TintAndShade = 0
+    .ThemeFont = xlThemeFontMinor
+End With
+
+'Borders
+Selection.Borders(xlDiagonalDown).LineStyle = xlNone
+Selection.Borders(xlDiagonalUp).LineStyle = xlNone
+With Selection.Borders(xlEdgeLeft)
+    .LineStyle = xlContinuous
+    .ColorIndex = 0
+    .TintAndShade = 0
+    .Weight = xlThin
+End With
+With Selection.Borders(xlEdgeTop)
+    .LineStyle = xlContinuous
+    .ColorIndex = 0
+    .TintAndShade = 0
+    .Weight = xlThin
+End With
+With Selection.Borders(xlEdgeBottom)
+    .LineStyle = xlContinuous
+    .ColorIndex = 0
+    .TintAndShade = 0
+    .Weight = xlThin
+End With
+With Selection.Borders(xlEdgeRight)
+    .LineStyle = xlContinuous
+    .ColorIndex = 0
+    .TintAndShade = 0
+    .Weight = xlThin
+End With
+With Selection.Borders(xlInsideVertical)
+    .LineStyle = xlContinuous
+    .ColorIndex = 0
+    .TintAndShade = 0
+    .Weight = xlThin
+End With
+With Selection.Borders(xlInsideHorizontal)
+    .LineStyle = xlContinuous
+    .ColorIndex = 0
+    .TintAndShade = 0
+    .Weight = xlThin
+End With
+
+'Middle align and left text align and wrap
+With Selection
+    .HorizontalAlignment = xlLeft
+    .VerticalAlignment = xlCenter
+    .WrapText = True
+    .Orientation = 0
+    .AddIndent = False
+    .IndentLevel = 0
+    .ShrinkToFit = False
+    .ReadingOrder = xlContext
+    .MergeCells = False
+End With
+
+
+
+'Change color underline and bold to all cells except for notes cells
+For i = 1 To c
+ActiveCell.Offset(0, arr(i) - 1).range(Cells(1, 1), Cells(nr, 1)).Select
+    'Color Fill
+    With Selection.Interior
+        .Pattern = xlNone
+        .TintAndShade = 0
+        .PatternTintAndShade = 0
+    End With
+    ' Color font
+    With Selection.Font
+        .ColorIndex = xlAutomatic
+        .TintAndShade = 0
+    End With
+    'Underline, Italics, Bold
+    Selection.Font.Underline = xlUnderlineStyleNone
+    Selection.Font.Italic = False
+    Selection.Font.Bold = False
+
+ActiveCell.Offset(0, -arr(i) + 1).range(Cells(1, 1), Cells(nr, nc)).Select
+Next i
+
+'First row edit (Center text alignment, color font and fill, bold)
+ActiveCell.range(Cells(1, 1), Cells(1, nc)).Select
+
+With Selection
+    .HorizontalAlignment = xlCenter
+    .VerticalAlignment = xlCenter
+    .WrapText = True
+    .Orientation = 0
+    .AddIndent = False
+    .IndentLevel = 0
+    .ShrinkToFit = False
+    .ReadingOrder = xlContext
+    .MergeCells = False
+End With
+Selection.Font.Bold = True
+With Selection.Interior
+    .Pattern = xlSolid
+    .PatternColorIndex = xlAutomatic
+    .ThemeColor = xlThemeColorLight1
+    .TintAndShade = 0
+    .PatternTintAndShade = 0
+End With
+With Selection.Font
+    .ThemeColor = xlThemeColorDark1
+    .TintAndShade = 0
+End With
+
+'Make Notes blue
+For i = 1 To nc
+    If (InStr(ActiveCell.Offset(0, i - 1).Value, "notes") > 0 Or InStr(ActiveCell.Offset(0, i - 1).Value, "Notes") > 0 Or InStr(ActiveCell.Offset(0, i - 1).Value, "NOTES") > 0) Then
+        With ActiveCell.Offset(0, i - 1).Interior
+        .Pattern = xlSolid
+        .PatternColorIndex = xlAutomatic
+        .ThemeColor = xlThemeColorLight2
+        .TintAndShade = -0.249977111117893
+        .PatternTintAndShade = 0
+        End With
+    End If
+Next i
+
+
+Selection.Rows.AutoFit
+Selection.Columns.AutoFit
+
+End Sub
+   
+
+CODE n/a
+
+Sub na()
+Dim i As Integer, j As Integer, nr As Integer, nc As Integer
+nr = Selection.Rows.Count
+nc = Selection.Columns.Count
+For i = 1 To nr
+    For j = 1 To nc
+    If IsEmpty(Selection.Cells(i, j)) = True Then Selection.Cells(i, j) = "n/a"
+    Next j
+Next i
+End Sub
